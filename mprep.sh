@@ -30,5 +30,7 @@ echo "import data"
 
 # needed because mariadb-import uses filename as table name
 ln -s /F1_4_Air_Releases_Facilities.csv $TABLE
-mariadb-import --ignore-lines=1 --fields-terminated-by=, --local -u root $DB /$TABLE \
+mariadb-import --ignore-lines=1 --fields-terminated-by=, \
+	--fields-optionally-enclosed-by='"' \
+	--local -u root $DB /$TABLE \
 	--columns=$COLS
