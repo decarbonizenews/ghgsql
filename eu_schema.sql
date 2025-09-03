@@ -1,0 +1,20 @@
+CREATE TABLE `eu` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `PublicationDate` VARCHAR(10) NOT NULL,
+  `countryName` VARCHAR(20) NOT NULL,
+  `reportingYear` VARCHAR(4) NOT NULL,
+  `EPRTR_SectorCode` TINYINT unsigned NOT NULL,
+  `EPRTR_SectorName` VARCHAR(128) NOT NULL,
+  `EPRTRAnnexIMainActivity` VARCHAR(16) NOT NULL,
+  `FacilityInspireId` VARCHAR(256) NOT NULL,
+  `facilityName` VARCHAR(512) NOT NULL,
+  `city` VARCHAR(128) NOT NULL,
+  `Longitude` VARCHAR(32) NOT NULL,
+  `Latitude` VARCHAR(32) NOT NULL,
+  `addressConfidentialityReason` VARCHAR(32) NOT NULL,
+  `TargetRelease` VARCHAR(8) NOT NULL,
+  `Pollutant` VARCHAR(128) NOT NULL,
+  `Releases` BIGINT NOT NULL,
+  `confidentialityReason` VARCHAR(16) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
