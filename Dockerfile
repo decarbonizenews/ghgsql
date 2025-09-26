@@ -11,7 +11,8 @@ RUN apt-get -y install apache2 \
 	php libapache2-mod-php php-mysql \
 	php-mbstring \
 	wget xz-utils \
-	nano less
+	nano less \
+	xlsx2csv
 
 RUN wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.xz
 
@@ -32,12 +33,17 @@ RUN sed -e 's:^bind-address:#bind-address:g' -i /etc/mysql/mariadb.conf.d/50-ser
 # Check for latest version:
 # https://sdi.eea.europa.eu/catalogue/srv/eng/catalog.search#/metadata/9405f714-8015-4b5b-a63c-280b82861b3d
 # Last data update: 2024-12-17
-
-# Download emission data
 RUN wget --content-disposition 'https://sdi.eea.europa.eu/datashare/s/GDAMfcpjjCB3MYt/download?path=%2FUser%20friendly%20.csv%20file&files=F1_4_Air_Releases_Facilities.csv'
+
+# Latest "Verified Emissions" from
+# https://union-registry-data.ec.europa.eu/report/welcome
+# Last data update: 2025-04-01
+RUN wget --content-disposition 'https://climate.ec.europa.eu/document/download/385daec1-0970-44ab-917d-f500658e72aa_en?filename=verified_emissions_2024_en.xlsx'
+RUN xlsx2csv verified_emissions_2024_en.xlsx /ets
 
 ADD mprep.sh /mprep.sh
 ADD eu_schema.sql /eu_schema.sql
+ADD ets_schema.sql /ets_schema.sql
 RUN /mprep.sh
 
 RUN rm /mprep.sh /eu_schema.sql /F1_4_Air_Releases_Facilities.csv /eu
