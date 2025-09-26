@@ -34,7 +34,7 @@ RUN sed -e 's:^bind-address:#bind-address:g' -i /etc/mysql/mariadb.conf.d/50-ser
 # Last data update: 2024-12-17
 
 # Download emission data
-RUN wget --content-disposition 'https://sdi.eea.europa.eu/datashare/s/qKbdiHx3yrqzjZ6/download?path=%2FUser%20friendly%20.csv%20file&files=F1_4_Air_Releases_Facilities.csv&downloadStartSecret=gx3d3xxpo8u'
+RUN wget --content-disposition 'https://sdi.eea.europa.eu/datashare/s/GDAMfcpjjCB3MYt/download?path=%2FUser%20friendly%20.csv%20file&files=F1_4_Air_Releases_Facilities.csv'
 
 ADD mprep.sh /mprep.sh
 ADD eu_schema.sql /eu_schema.sql
