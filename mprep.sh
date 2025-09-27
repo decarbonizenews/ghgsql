@@ -43,6 +43,8 @@ COLS=$(tail -n +3 /ets_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:
 
 echo "import ets data"
 
+sed -i -e 's:Excluded:NULL:g' /ets
+
 mariadb-import --ignore-lines=21 --fields-terminated-by=, \
 	--fields-optionally-enclosed-by='"' \
 	--local -u root $DB /ets \
