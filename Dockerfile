@@ -2,7 +2,7 @@
 
 FROM debian:trixie
 
-ENV PHPMYADMIN_VERSION="5.2.2"
+ENV PHPMYADMIN_VERSION="5.2.3"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
