@@ -33,7 +33,7 @@ RUN sed -e 's:^bind-address:#bind-address:g' -i /etc/mysql/mariadb.conf.d/50-ser
 # Check for latest version:
 # https://sdi.eea.europa.eu/catalogue/srv/eng/catalog.search#/metadata/9405f714-8015-4b5b-a63c-280b82861b3d
 # Last data update: 2024-12-17
-RUN wget --content-disposition 'https://sdi.eea.europa.eu/datashare/s/GDAMfcpjjCB3MYt/download?path=%2FUser%20friendly%20.csv%20file&files=F1_4_Air_Releases_Facilities.csv'
+RUN wget --content-disposition 'https://sdi.eea.europa.eu/datashare/public.php/dav/files/gkNxiP52NwafRGs/User%20friendly%20.csv%20file/F1_4_Air_Releases_Facilities.csv'
 
 # Latest "Verified Emissions" from
 # https://union-registry-data.ec.europa.eu/report/welcome
