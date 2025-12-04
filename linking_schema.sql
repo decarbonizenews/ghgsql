@@ -1,0 +1,7 @@
+CREATE TABLE `linking` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `ets` VARCHAR(32) NOT NULL,
+  `iep` VARCHAR(128) NOT NULL,
+  `probability` FLOAT NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

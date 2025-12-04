@@ -49,3 +49,15 @@ mariadb-import --ignore-lines=21 --fields-terminated-by=, \
 	--fields-optionally-enclosed-by='"' \
 	--local -u root $DB /ets \
 	--columns=$COLS
+
+
+echo "import linking schema"
+
+mariadb -u root $DB </linking_schema.sql
+
+echo "Import linking data"
+ln -s /eutl_2_iep_final.csv linking
+
+mariadb-import --ignore-lines=1 --fields-terminated-by=, \
+	--local -u root $DB /linking \
+	--columns=ets,iep,probability

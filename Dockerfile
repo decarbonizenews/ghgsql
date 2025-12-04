@@ -41,9 +41,14 @@ RUN wget --content-disposition 'https://sdi.eea.europa.eu/datashare/public.php/d
 RUN wget --content-disposition 'https://climate.ec.europa.eu/document/download/385daec1-0970-44ab-917d-f500658e72aa_en?filename=verified_emissions_2024_en.xlsx'
 RUN xlsx2csv verified_emissions_2024_en.xlsx /ets
 
+# Download linking data
+# https://cadmus.eui.eu/entities/publication/d8887cdd-c98c-4ba3-8e91-0710747f4e4e
+RUN wget --content-disposition https://cadmus.eui.eu/server/api/core/bitstreams/6723beed-f56f-43e7-8cb4-dc526a62f087/content
+
 ADD mprep.sh /mprep.sh
 ADD eu_schema.sql /eu_schema.sql
 ADD ets_schema.sql /ets_schema.sql
+ADD linking_schema.sql /linking_schema.sql
 RUN /mprep.sh
 
 RUN rm /mprep.sh /eu_schema.sql /F1_4_Air_Releases_Facilities.csv /eu
