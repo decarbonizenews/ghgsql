@@ -1,4 +1,6 @@
 #!/bin/sh
 # SPDX-License-Identifier: 0BSD
 
-mariadb --defaults-extra-file=ghg.cfg $@
+MYDIR=$(dirname -- "$0")
+
+mariadb --defaults-extra-file=$MYDIR/ghg.cfg "$@"
