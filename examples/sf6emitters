@@ -1,0 +1,16 @@
+#!/bin/sh
+# SPDX-License-Identifier: 0BSD
+
+# All SF6 emitters with any data point above 1 t
+./plotfacility -t sf6 \
+	CH.CAED/000000149.Facility DE.EEA/06-05-122-0214127.FACILITY \
+	FR.CAED/1900.FACILITY FR.CAED/8197.FACILITY FR.CAED/9988.FACILITY \
+	FR.EEA/061.04306.FACILITY FR.EEA/072.01405.FACILITY \
+	IE.CAED/P0207.FACILITY IT.CAED/070461002.FACILITY \
+	IT.CAED/110292002.FACILITY IT.CAED/208642004.FACILITY \
+	IT.CAED/670512002.FACILITY SE.CAED/10016482.Facility \
+	UK.CAED/EW_EA-16614.FACILITY UK.CAED/EW_EA-1739.FACILITY \
+	UK.LAED/E6_600.FACILITY \
+	https://registry.gdi-de.org/id/de.bw.lubw.inspire.pf/pf-450-7047053-00000000 \
+	https://registry.gdi-de.org/id/de.by.inspire.pf.ied/S00080 \
+	https://registry.gdi-de.org/id/de.by.inspire.pf.ied/S00765
