@@ -1,0 +1,99 @@
+#!/usr/bin/python3
+# SPDX-License-Identifier: 0BSD
+#
+# Compares emissions from ETS and Industrial Reporting data
+
+import argparse
+
+import MySQLdb
+import MySQLdb.cursors
+import pandas
+import plotly.express
+
+ap = argparse.ArgumentParser()
+ap.add_argument("inspireid", help="ID in industrial reporting FacilityInspireId")
+ap.add_argument("-d", "--debug", action="store_true")
+ap.add_argument("-n", "--n2o", action="store_true")
+ap.add_argument("-s", "--start", help="Start year")
+args = ap.parse_args()
+
+startyear = 0
+if args.start:
+    startyear = int(args.start)
+
+c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
+                     database="ghg", user="ghg", password="ghg").cursor()  # noqa: S106
+
+c.execute("SELECT * FROM linking WHERE iep=%s", (args.inspireid,))
+
+linking = c.fetchone()
+
+etscountry, etsid = linking["ets"].split("_")
+
+c.execute("SELECT * FROM ets WHERE "
+          "REGISTRY_CODE=%s AND INSTALLATION_IDENTIFIER=%s",
+          (etscountry, etsid))
+
+etsdata = {}
+for k, v in c.fetchone().items():
+    if k.startswith("VERIFIED_EMISSIONS_"):
+        if v == -1:
+            continue
+        year = int(k.split("_")[-1])
+        if year < startyear:
+            continue
+        etsdata[year] = v
+
+if args.debug:
+    print(etsdata)
+
+c.execute("SELECT reportingYear,Releases FROM eu "
+          "WHERE Pollutant='Carbon dioxide (CO2)' AND FacilityInspireId=%s",
+          (args.inspireid,))
+
+iremaxyear = ireminyear = 2020
+iredata = {}
+for d in c.fetchall():
+    year = int(d["reportingYear"])
+    if year < startyear:
+        continue
+    iredata[year] = d["Releases"] / 1000  # industrial reporting is in kg, ets in t
+
+if args.n2o:
+    c.execute("SELECT reportingYear,Releases FROM eu "
+              "WHERE Pollutant='Nitrous oxide (N2O)' AND FacilityInspireId=%s",
+              (args.inspireid,))
+    for d in c.fetchall():
+        year = int(d["reportingYear"])
+        if year < startyear:
+            continue
+        if year <= 2012:
+            # https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32009D0073
+            n2ogwpfactor = 310
+        elif 2013 <= year <= 2020:
+            # table 6 at
+            # https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2012:181:0030:0104:en:PDF
+            n2ogwpfactor = 310
+        elif year >= 2021:
+            # according to https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32020R2085
+            n2ogwpfactor = 265
+
+        if year not in iredata:
+            iredata[year] = 0
+        if args.debug:
+            print(f"added {d['Releases']} N2O")
+        # divide by 1000 because industrial reporting is in kg, ets in t
+        iredata[year] = (d["Releases"] * n2ogwpfactor) / 1000
+
+if args.debug:
+    print(iredata)
+
+
+dat = {"ETS": etsdata, "Industrial Reporting": iredata}
+dat = pandas.DataFrame(dat).sort_index()
+
+fig = plotly.express.line(dat, markers=True)
+fig.update_layout(yaxis_title="tCO2", xaxis_title="year")
+fig.update_yaxes(rangemode="tozero")
+fig.update_traces(connectgaps=True)
+fig.show()
