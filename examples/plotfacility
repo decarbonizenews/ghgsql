@@ -15,6 +15,7 @@ import plotly.express
 ap = argparse.ArgumentParser()
 ap.add_argument("facilityids", nargs="+")
 ap.add_argument("-t", "--type", help="Type of emission (Default: CO2)")
+ap.add_argument("-b", "--bar", action="store_true", help="Use bar chart")
 args = ap.parse_args()
 
 ppath = os.path.abspath(os.path.join(os.path.dirname(__file__), "../pollutantshort.json"))
@@ -56,8 +57,12 @@ for facilityid in args.facilityids:
     dat[d["facilityName"]] = company
 dat = pandas.DataFrame(dat).sort_index()
 
-fig = plotly.express.line(dat, markers=True)
-fig.update_layout(yaxis_title=f"kg{shorttype}", xaxis_title="year")
-fig.update_yaxes(rangemode="tozero")
-fig.update_traces(connectgaps=True)
+if args.bar:
+    fig = plotly.express.bar(dat)
+    fig.update_layout(yaxis_title=f"kg{shorttype}", xaxis_title="year")
+else:
+    fig = plotly.express.line(dat, markers=True)
+    fig.update_layout(yaxis_title=f"kg{shorttype}", xaxis_title="year")
+    fig.update_yaxes(rangemode="tozero")
+    fig.update_traces(connectgaps=True)
 fig.show()
