@@ -44,7 +44,7 @@ for facilityid in args.facilityids:
 dat = pandas.DataFrame(dat).sort_index()
 
 fig = plotly.express.line(dat, markers=True)
-fig.update_layout(yaxis_title="tCO2", xaxis_title="year")
+fig.update_layout(yaxis_title="kgCO2", xaxis_title="year")
 fig.update_yaxes(rangemode="tozero")
 fig.update_traces(connectgaps=True)
 fig.show()
