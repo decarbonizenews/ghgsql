@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: 0BSD
 
 import argparse
+import json
+import os
+import pathlib
 import sys
 
 import MySQLdb
@@ -14,17 +17,22 @@ ap.add_argument("facilityids", nargs="+")
 ap.add_argument("-t", "--type", help="Type of emission (Default: CO2)")
 args = ap.parse_args()
 
+ppath = os.path.abspath(os.path.join(os.path.dirname(__file__), "../pollutantshort.json"))
+pshort = json.loads(pathlib.Path(ppath).read_text())
+
 shorttype = None
-if not args.type or args.type.lower() == "co2":
+if not args.type:
     ptype = "Carbon dioxide (CO2)"
     shorttype = "CO2"
-elif args.type.lower() == "sf6":
-    ptype = "Sulphur hexafluoride (SF6)"
 else:
-    sys.exit("Currently unsupported emission type")
+    for k, v in pshort.items():
+        if v.lower() == args.type.lower():
+            shorttype = v
+            ptype = k
 
 if not shorttype:
-    shorttype = args.type.upper()
+    ptype = args.type
+    shorttype = args.type
 
 c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
                     database="ghg", user="ghg", password="ghg").cursor()  # noqa: S106

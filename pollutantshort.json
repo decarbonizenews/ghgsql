@@ -1,0 +1,23 @@
+{
+    "1,1,1-trichloroethane (TCE-1,1,1)": "TCE",
+    "1,1,2,2-tetrachloroethane (TETRACHLOROETHANE-1,1,2,2)": "TeCA",
+    "1,2,3,4,5,6-hexachlorocyclohexane (HCH)": "HCE",
+    "1,2-dichloroethane (DCE-1,2)": "DCE",
+    "Ammonia (NH3)": "NH3",
+    "Carbon dioxide (CO2)": "CO2",
+    "Carbon dioxide (CO2) excluding biomass": "CO2-exbio",
+    "Carbon monoxide (CO)": "CO",
+    "Chlorofluorocarbons (CFCs)": "CFC",
+    "Dichloromethane (DCM)": "DCM",
+    "Hexachlorobenzene (HCB)": "HCB",
+    "Hydro-fluorocarbons (HFCS)": "HFC",
+    "Hydrochlorofluorocarbons (HCFCs)": "HCFC",
+    "Methane (CH4)": "CH4",
+    "Nitrogen oxides (NOX)": "NOx",
+    "Nitrous oxide (N2O)": "N2O",
+    "Perfluorocarbons (PFCs)": "PFC",
+    "Polycyclic aromatic hydrocarbons (PAHs)": "PAH",
+    "Sulphur hexafluoride (SF6)": "SF6",
+    "Sulphur oxides (SOX)": "SOx",
+    "Tetrachloromethane (TCM)": "TCM"
+}
