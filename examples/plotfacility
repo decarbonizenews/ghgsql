@@ -14,12 +14,17 @@ ap.add_argument("facilityids", nargs="+")
 ap.add_argument("-t", "--type", help="Type of emission (Default: CO2)")
 args = ap.parse_args()
 
+shorttype = None
 if not args.type or args.type.lower() == "co2":
     ptype = "Carbon dioxide (CO2)"
+    shorttype = "CO2"
 elif args.type.lower() == "sf6":
     ptype = "Sulphur hexafluoride (SF6)"
 else:
     sys.exit("Currently unsupported emission type")
+
+if not shorttype:
+    shorttype = args.type.upper()
 
 c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
                     database="ghg", user="ghg", password="ghg").cursor()  # noqa: S106
@@ -44,7 +49,7 @@ for facilityid in args.facilityids:
 dat = pandas.DataFrame(dat).sort_index()
 
 fig = plotly.express.line(dat, markers=True)
-fig.update_layout(yaxis_title="kgCO2", xaxis_title="year")
+fig.update_layout(yaxis_title=f"kg{shorttype}", xaxis_title="year")
 fig.update_yaxes(rangemode="tozero")
 fig.update_traces(connectgaps=True)
 fig.show()
