@@ -2,7 +2,7 @@ CREATE TABLE `eu` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `PublicationDate` VARCHAR(10) NOT NULL,
   `countryName` VARCHAR(20) NOT NULL,
-  `reportingYear` VARCHAR(4) NOT NULL,
+  `reportingYear` SMALLINT NOT NULL,
   `EPRTR_SectorCode` TINYINT unsigned NOT NULL,
   `EPRTR_SectorName` VARCHAR(128) NOT NULL,
   `EPRTRAnnexIMainActivity` VARCHAR(16) NOT NULL,
