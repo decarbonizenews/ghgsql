@@ -16,6 +16,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("facilityids", nargs="+")
 ap.add_argument("-t", "--type", help="Type of emission (Default: CO2)")
 ap.add_argument("-b", "--bar", action="store_true", help="Use bar chart")
+ap.add_argument("--html", help="Write HTML file")
 args = ap.parse_args()
 
 ppath = os.path.abspath(os.path.join(os.path.dirname(__file__), "../pollutantshort.json"))
@@ -70,4 +71,7 @@ else:
     fig.update_yaxes(rangemode="tozero")
     fig.update_traces(connectgaps=True)
 fig.update_xaxes(dtick="Y1")
-fig.show()
+if args.html:
+    fig.write_html(args.html, full_html=False, include_plotlyjs=False)
+else:
+    fig.show()
