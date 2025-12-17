@@ -60,9 +60,14 @@ dat = pandas.DataFrame(dat).sort_index()
 if args.bar:
     fig = plotly.express.bar(dat)
     fig.update_layout(yaxis_title=f"kg{shorttype}", xaxis_title="year")
+    # Examples to adapt layout:
+    # fig.update_layout(showlegend=False)  # noqa: ERA001
+    # fig.update_layout(font_family="Roboto Black", font={"size": 50})  # noqa: ERA001
+    # fig.update_traces(marker_color="orange")  # noqa: ERA001
 else:
     fig = plotly.express.line(dat, markers=True)
     fig.update_layout(yaxis_title=f"kg{shorttype}", xaxis_title="year")
     fig.update_yaxes(rangemode="tozero")
     fig.update_traces(connectgaps=True)
+fig.update_xaxes(dtick="Y1")
 fig.show()
