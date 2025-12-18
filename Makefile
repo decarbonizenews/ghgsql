@@ -4,4 +4,4 @@ all:
 	docker build . -t ghgsql
 
 run:
-	docker run -p 3306:3306 -p 80:80 ghgsql
+	docker run -t -i -p 3306:3306 -p 80:80 ghgsql
