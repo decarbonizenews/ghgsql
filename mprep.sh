@@ -1,11 +1,10 @@
 #!/bin/sh -x
 # SPDX-License-Identifier: 0BSD
+set -euo pipefail
 
-SCHEMA="eu_schema.sql"
-DB="ghg"
+DB="eu"
 USER="ghg"
 PW="ghg"
-TABLE="eu"
 
 mariadbd --user=root &
 
@@ -20,44 +19,25 @@ CREATE DATABASE $DB;
 CREATE USER '$USER'@'%' IDENTIFIED BY '$PW';GRANT ALL PRIVILEGES ON $DB.* TO '$USER'@'%';
 """ | mariadb -u root
 
-echo "import industrial reporting schema"
+echo "Import SQL schemas"
+cat *.sql | mariadb -u root $DB
 
-mariadb -u root $DB <$SCHEMA
-
-COLS=$(tail -n +3 $SCHEMA | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
-
-echo "import industrial reporting data"
-
-# needed because mariadb-import uses filename as table name
-ln -s /F1_4_Air_Releases_Facilities.csv $TABLE
+echo "Import industrial reporting data"
+COLS=$(tail -n +3 ird_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
 mariadb-import --ignore-lines=1 --fields-terminated-by=, \
 	--fields-optionally-enclosed-by='"' \
-	--local -u root $DB /$TABLE \
+	--local -u root $DB ird.csv \
 	--columns=$COLS
 
-echo "import ets schema"
-
-mariadb -u root $DB </ets_schema.sql
-
-COLS=$(tail -n +3 /ets_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
-
-echo "import ets data"
-
-sed -i -e 's:Excluded:NULL:g' /ets
-
+echo "Import ets data"
+COLS=$(tail -n +3 ets_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
+sed -i -e 's:Excluded:NULL:g' ets.csv
 mariadb-import --ignore-lines=21 --fields-terminated-by=, \
 	--fields-optionally-enclosed-by='"' \
-	--local -u root $DB /ets \
+	--local -u root $DB ets.csv \
 	--columns=$COLS
 
-
-echo "import linking schema"
-
-mariadb -u root $DB </linking_schema.sql
-
 echo "Import linking data"
-ln -s /eutl_2_iep_final.csv linking
-
 mariadb-import --ignore-lines=1 --fields-terminated-by=, \
-	--local -u root $DB /linking \
+	--local -u root $DB linking.csv \
 	--columns=ets,iep,probability

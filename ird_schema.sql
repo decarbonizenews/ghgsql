@@ -1,4 +1,4 @@
-CREATE TABLE `eu` (
+CREATE TABLE `ird` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `PublicationDate` VARCHAR(10) NOT NULL,
   `countryName` VARCHAR(20) NOT NULL,

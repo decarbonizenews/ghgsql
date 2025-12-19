@@ -22,7 +22,7 @@ if args.start:
     startyear = int(args.start)
 
 c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
-                     database="ghg", user="ghg", password="ghg").cursor()  # noqa: S106
+                     database="eu", user="ghg", password="ghg").cursor()  # noqa: S106
 
 c.execute("SELECT * FROM linking WHERE iep=%s", (args.inspireid,))
 
@@ -47,7 +47,7 @@ for k, v in c.fetchone().items():
 if args.debug:
     print(etsdata)
 
-c.execute("SELECT reportingYear,Releases FROM eu "
+c.execute("SELECT reportingYear,Releases FROM ird "
           "WHERE Pollutant='Carbon dioxide (CO2)' AND FacilityInspireId=%s",
           (args.inspireid,))
 

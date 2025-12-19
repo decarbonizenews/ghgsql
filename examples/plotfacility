@@ -37,11 +37,11 @@ if not shorttype:
     shorttype = args.type
 
 c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
-                    database="ghg", user="ghg", password="ghg").cursor()  # noqa: S106
+                    database="eu", user="ghg", password="ghg").cursor()  # noqa: S106
 
 dat = {}
 for facilityid in args.facilityids:
-    c.execute("SELECT reportingYear,Releases,facilityName FROM eu "
+    c.execute("SELECT reportingYear,Releases,facilityName FROM ird "
               "WHERE Pollutant=%s AND FacilityInspireId=%s"
               "ORDER BY reportingYear",
               (ptype, facilityid))
