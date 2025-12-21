@@ -26,7 +26,7 @@ echo "Import industrial reporting data"
 COLS=$(tail -n +3 ird_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
 mariadb-import --ignore-lines=1 --fields-terminated-by=, \
 	--fields-optionally-enclosed-by='"' \
-	--local -u root $DB ird.csv \
+	--local -u root $DB irdraw.csv \
 	--columns=$COLS
 
 echo "Import ets data"
@@ -41,3 +41,5 @@ echo "Import linking data"
 mariadb-import --ignore-lines=1 --fields-terminated-by=, \
 	--local -u root $DB linking.csv \
 	--columns=ets,iep,probability
+
+./simplifydb.py

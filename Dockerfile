@@ -20,12 +20,10 @@ ENV LINKING_URL="https://cadmus.eui.eu/server/api/core/bitstreams/6723beed-f56f-
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
-RUN apt-get -y install apache2 \
-	mariadb-server \
-	php libapache2-mod-php php-mysql \
-	php-mbstring \
-	wget xz-utils \
-	nano less \
+RUN apt-get -y install apache2 mariadb-server \
+	php libapache2-mod-php php-mysql php-mbstring \
+	python3-mysqldb python3-pycountry \
+	wget xz-utils nano less \
 	xlsx2csv
 
 RUN wget https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.xz
@@ -43,15 +41,15 @@ RUN mkdir /var/run/mysqld
 RUN chown mysql:mysql /var/run/mysqld
 RUN sed -e 's:^bind-address:#bind-address:g' -i /etc/mysql/mariadb.conf.d/50-server.cnf
 
-RUN wget -O ird.csv "${IRD_URL}"
+RUN wget -O irdraw.csv "${IRD_URL}"
 RUN wget -O etsdata.xlsx "${ETS_URL}"
 RUN xlsx2csv etsdata.xlsx ets.csv
 RUN wget -O linking.csv "${LINKING_URL}"
 
-COPY run.sh mprep.sh ird_schema.sql ets_schema.sql linking_schema.sql /
+COPY run.sh mprep.sh ird_schema.sql ets_schema.sql linking_schema.sql simplifydb.py /
 RUN ./mprep.sh
 
-RUN rm mprep.sh *.csv *.sql *.xlsx
+RUN rm mprep.sh simplifydb.py *.csv *.sql *.xlsx
 
 CMD ["/run.sh"]
 
