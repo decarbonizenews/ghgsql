@@ -47,24 +47,24 @@ for k, v in c.fetchone().items():
 if args.debug:
     print(etsdata)
 
-c.execute("SELECT reportingYear,Releases FROM ird "
-          "WHERE Pollutant='Carbon dioxide (CO2)' AND FacilityInspireId=%s",
+c.execute("SELECT year,releases FROM ird "
+          "WHERE pollutant='CO2' AND inspireid=%s",
           (args.inspireid,))
 
 iremaxyear = ireminyear = 2020
 iredata = {}
 for d in c.fetchall():
-    year = int(d["reportingYear"])
+    year = int(d["year"])
     if year < startyear:
         continue
-    iredata[year] = d["Releases"] / 1000  # industrial reporting is in kg, ets in t
+    iredata[year] = d["releases"] / 1000  # industrial reporting is in kg, ets in t
 
 if args.n2o:
-    c.execute("SELECT reportingYear,Releases FROM eu "
-              "WHERE Pollutant='Nitrous oxide (N2O)' AND FacilityInspireId=%s",
+    c.execute("SELECT year,releases FROM ird "
+              "WHERE pollutant='N2O' AND inspireid=%s",
               (args.inspireid,))
     for d in c.fetchall():
-        year = int(d["reportingYear"])
+        year = int(d["year"])
         if year < startyear:
             continue
         if year <= 2012:
@@ -81,9 +81,9 @@ if args.n2o:
         if year not in iredata:
             iredata[year] = 0
         if args.debug:
-            print(f"added {d['Releases']} N2O")
+            print(f"added {d['releases']} N2O")
         # divide by 1000 because industrial reporting is in kg, ets in t
-        iredata[year] = (d["Releases"] * n2ogwpfactor) / 1000
+        iredata[year] = (d["releases"] * n2ogwpfactor) / 1000
 
 if args.debug:
     print(iredata)
