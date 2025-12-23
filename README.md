@@ -10,9 +10,9 @@ phpMyAdmin web interface on localhost.
 
 It currently provides a database `eu` with multiple tables:
 
-* `ird`/`irdraw` contain emission data for industrial facilities reported due to the
-  EU's Industrial Emissions Directive. `irdraw` contains the data in unmodified form
-  (column names and content like in CSV data source), while `ird` contains a simplified
+* `prtr`/`prtrraw` contain emission data for industrial facilities reported due to the
+  EU's Industrial Emissions Directive. `prtrraw` contains the data in unmodified form
+  (column names and content like in CSV data source), while `prtr` contains a simplified
   version with shorter names (e.g., column name `year` instead of `reportingYear`,
   pollutant name `CO2` instead of `Carbon dioxide (CO2)`) and uninteresting data
   removed.

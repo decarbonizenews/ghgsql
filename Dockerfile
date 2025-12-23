@@ -7,7 +7,7 @@ ENV PHPMYADMIN_VERSION="5.2.3"
 # Check for latest version:
 # https://sdi.eea.europa.eu/catalogue/srv/eng/catalog.search#/metadata/9405f714-8015-4b5b-a63c-280b82861b3d
 # Last data update: 2025-12-15
-ENV IRD_URL="https://sdi.eea.europa.eu/datashare/public.php/dav/files/gN8jayNx7igxeMf/User-friendly-CSV/F1_4_Air_Releases_Facilities.csv"
+ENV PRTR_URL="https://sdi.eea.europa.eu/datashare/public.php/dav/files/gN8jayNx7igxeMf/User-friendly-CSV/F1_4_Air_Releases_Facilities.csv"
 
 # Latest "Verified Emissions" from
 # https://union-registry-data.ec.europa.eu/report/welcome
@@ -41,12 +41,12 @@ RUN mkdir /var/run/mysqld
 RUN chown mysql:mysql /var/run/mysqld
 RUN sed -e 's:^bind-address:#bind-address:g' -i /etc/mysql/mariadb.conf.d/50-server.cnf
 
-RUN wget -O irdraw.csv "${IRD_URL}"
+RUN wget -O prtrraw.csv "${PRTR_URL}"
 RUN wget -O etsdata.xlsx "${ETS_URL}"
 RUN xlsx2csv etsdata.xlsx ets.csv
 RUN wget -O linking.csv "${LINKING_URL}"
 
-COPY run.sh mprep.sh ird_schema.sql ets_schema.sql linking_schema.sql simplifydb.py /
+COPY run.sh mprep.sh prtr_schema.sql ets_schema.sql linking_schema.sql simplifydb.py /
 RUN ./mprep.sh
 
 RUN rm mprep.sh simplifydb.py *.csv *.sql *.xlsx

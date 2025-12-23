@@ -25,10 +25,10 @@ echo "Import SQL schemas"
 cat *.sql | mariadb -u root $DB
 
 echo "Import industrial reporting data"
-COLS=$(tail -n +3 ird_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
+COLS=$(tail -n +3 prtr_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
 mariadb-import --ignore-lines=1 --fields-terminated-by=, \
 	--fields-optionally-enclosed-by='"' \
-	--local -u root $DB irdraw.csv \
+	--local -u root $DB prtrraw.csv \
 	--columns=$COLS
 
 echo "Import ets data"

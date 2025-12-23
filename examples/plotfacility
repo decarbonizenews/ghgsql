@@ -23,11 +23,11 @@ ppath = os.path.abspath(os.path.join(os.path.dirname(__file__), "../pollutantsho
 pshort = json.loads(pathlib.Path(ppath).read_text())
 
 c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
-                    database="eu", user="ghg", password="ghg").cursor()  # noqa: S106
+                    database="eu", user="ghg").cursor()
 
 dat = {}
 for facilityid in args.facilityids:
-    c.execute("SELECT year,releases,name FROM ird "
+    c.execute("SELECT year,releases,name FROM prtr "
               "WHERE pollutant=%s AND inspireid=%s"
               "ORDER BY year",
               (args.type, facilityid))
