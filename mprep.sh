@@ -4,7 +4,6 @@ set -euo pipefail
 
 DB="eu"
 USER="ghg"
-PW="ghg"
 
 mariadbd --user=root &
 
@@ -16,7 +15,10 @@ sleep 5
 
 echo """
 CREATE DATABASE $DB;
-CREATE USER '$USER'@'%' IDENTIFIED BY '$PW';GRANT ALL PRIVILEGES ON $DB.* TO '$USER'@'%';
+CREATE USER '$USER'@'%' IDENTIFIED BY '';
+GRANT ALL PRIVILEGES ON $DB.* TO '$USER'@'%';
+RENAME USER 'root'@'localhost' TO 'root'@'%';
+SET PASSWORD FOR 'root'@'%' = PASSWORD('');
 """ | mariadb -u root
 
 echo "Import SQL schemas"

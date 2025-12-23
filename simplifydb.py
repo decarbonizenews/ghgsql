@@ -5,7 +5,7 @@ import MySQLdb
 import MySQLdb.cursors
 
 con = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
-                      database="eu", user="ghg", password="ghg")  # noqa: S106
+                      database="eu", user="ghg")
 c = con.cursor()
 
 c.execute("CREATE TABLE `ird` LIKE `irdraw`")
