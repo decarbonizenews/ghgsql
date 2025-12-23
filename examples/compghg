@@ -22,7 +22,7 @@ if args.start:
     startyear = int(args.start)
 
 c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
-                     database="eu", user="ghg").cursor()
+                    database="eu", user="ghg").cursor()
 
 c.execute("SELECT * FROM linking WHERE iep=%s", (args.inspireid,))
 
