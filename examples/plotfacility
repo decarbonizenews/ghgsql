@@ -14,7 +14,7 @@ import plotly.express
 
 ap = argparse.ArgumentParser()
 ap.add_argument("facilityids", nargs="+")
-ap.add_argument("-t", "--type", help="Type of emission (Default: CO2)")
+ap.add_argument("-t", "--type", default="CO2", help="Type of emission (Default: CO2)")
 ap.add_argument("-b", "--bar", action="store_true", help="Use bar chart")
 ap.add_argument("--html", help="Write HTML file")
 args = ap.parse_args()
