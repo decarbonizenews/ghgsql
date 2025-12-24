@@ -2,7 +2,7 @@ CREATE TABLE `prtrraw` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `PublicationDate` VARCHAR(10) CHARACTER SET ascii NOT NULL,
   `countryName` VARCHAR(20) CHARACTER SET ascii NOT NULL,
-  `reportingYear` SMALLINT NOT NULL,
+  `reportingYear` SMALLINT unsigned NOT NULL,
   `EPRTR_SectorCode` TINYINT unsigned NOT NULL,
   `EPRTR_SectorName` VARCHAR(128) CHARACTER SET ascii NOT NULL,
   `EPRTRAnnexIMainActivity` VARCHAR(16) CHARACTER SET ascii NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE `prtrraw` (
   `addressConfidentialityReason` VARCHAR(32) CHARACTER SET ascii NOT NULL,
   `TargetRelease` VARCHAR(8) CHARACTER SET ascii NOT NULL,
   `Pollutant` VARCHAR(128) CHARACTER SET ascii NOT NULL,
-  `Releases` BIGINT NOT NULL,
+  `Releases` BIGINT unsigned NOT NULL,
   `confidentialityReason` VARCHAR(16) CHARACTER SET ascii NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
