@@ -29,9 +29,12 @@ c.execute("ALTER TABLE prtr RENAME COLUMN `Pollutant` TO `pollutant`")
 c.execute("ALTER TABLE prtr RENAME COLUMN `Releases` TO `releases`")
 c.execute("ALTER TABLE prtr RENAME COLUMN `ConfidentialityReason` TO `confreason`")
 
-c.execute("ALTER TABLE prtr MODIFY `addrconfreason` VARCHAR(32) CHARACTER SET ascii NOT NULL AFTER `releases`")
-c.execute("ALTER TABLE prtr MODIFY `annexiactivity` VARCHAR(16) CHARACTER SET ascii NOT NULL AFTER `releases`")
-c.execute("ALTER TABLE prtr MODIFY `sectorname` VARCHAR(128) CHARACTER SET ascii NOT NULL AFTER `releases`")
+c.execute("ALTER TABLE prtr MODIFY "
+          "`addrconfreason` VARCHAR(32) CHARACTER SET ascii NOT NULL AFTER `releases`")
+c.execute("ALTER TABLE prtr MODIFY "
+          "`annexiactivity` VARCHAR(16) CHARACTER SET ascii NOT NULL AFTER `releases`")
+c.execute("ALTER TABLE prtr MODIFY "
+          "`sectorname` VARCHAR(128) CHARACTER SET ascii NOT NULL AFTER `releases`")
 c.execute("ALTER TABLE prtr MODIFY `sectorcode` TINYINT unsigned NOT NULL AFTER `releases`")
 c.execute("ALTER TABLE prtr MODIFY `lat` VARCHAR(32) CHARACTER SET ascii NOT NULL AFTER `releases`")
 c.execute("ALTER TABLE prtr MODIFY `lon` VARCHAR(32) CHARACTER SET ascii NOT NULL AFTER `releases`")
