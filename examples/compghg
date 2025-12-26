@@ -30,7 +30,7 @@ def getdata(db, inspireid, n2o=False, start=0, end=9999):
                 continue
             etsdata[year] = v
 
-    db.execute("SELECT year,releases FROM prtr "
+    db.execute("SELECT year,releases FROM iep "
                "WHERE pollutant='CO2' AND inspireid=%s",
                (inspireid,))
 
@@ -42,7 +42,7 @@ def getdata(db, inspireid, n2o=False, start=0, end=9999):
         iredata[year] = d["releases"] / 1000  # industrial reporting is in kg, ets in t
 
     if n2o:
-        db.execute("SELECT year,releases FROM prtr "
+        db.execute("SELECT year,releases FROM iep "
                    "WHERE pollutant='N2O' AND inspireid=%s",
                    (inspireid,))
         for d in db.fetchall():

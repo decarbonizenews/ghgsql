@@ -1,4 +1,4 @@
-CREATE TABLE `prtrraw` (
+CREATE TABLE `iepraw` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `PublicationDate` VARCHAR(10) CHARACTER SET ascii NOT NULL,
   `countryName` VARCHAR(20) CHARACTER SET ascii NOT NULL,

@@ -27,7 +27,7 @@ c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
 
 dat = {}
 for facilityid in args.facilityids:
-    c.execute("SELECT year,releases,name FROM prtr "
+    c.execute("SELECT year,releases,name FROM iep "
               "WHERE pollutant=%s AND inspireid=%s"
               "ORDER BY year",
               (args.type, facilityid))
