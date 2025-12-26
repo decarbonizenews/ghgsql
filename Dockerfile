@@ -10,7 +10,7 @@ ENV PHPMYADMIN_VERSION="5.2.3"
 ENV IEP_URL="https://sdi.eea.europa.eu/datashare/public.php/dav/files/gN8jayNx7igxeMf/User-friendly-CSV/F1_4_Air_Releases_Facilities.csv"
 
 # Latest "Verified Emissions" from
-# https://union-registry-data.ec.europa.eu/report/welcome
+# https://union-registry-data.ec.europa.eu/
 # Last data update: 2025-04-01
 ENV ETS_URL="https://climate.ec.europa.eu/document/download/385daec1-0970-44ab-917d-f500658e72aa_en?filename=verified_emissions_2024_en.xlsx"
 
