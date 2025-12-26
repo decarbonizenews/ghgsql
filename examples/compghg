@@ -65,7 +65,7 @@ def getdata(db, inspireid, n2o=False, start=0, end=9999):
             # divide by 1000 because industrial reporting is in kg, ets in t
             iredata[year] = (d["releases"] * n2ogwpfactor) / 1000
 
-    dat = {"ETS": etsdata, "Industrial Reporting": iredata}
+    dat = {"Emission Trading System": etsdata, "Industrial Emissions Portal": iredata}
     return pandas.DataFrame(dat).sort_index()
 
 
@@ -83,7 +83,10 @@ if __name__ == "__main__":
     cdata = getdata(c, args.inspireid, start=args.start, n2o=args.n2o)
 
     fig = plotly.express.line(cdata, markers=True)
-    fig.update_layout(yaxis_title="tCO2", xaxis_title="year")
+    unit = "tCO₂"
+    if args.n2o:
+        unit = "tCO₂eq"
+    fig.update_layout(yaxis_title=unit, xaxis_title="year")
     fig.update_yaxes(rangemode="tozero")
     fig.update_traces(connectgaps=True)
     fig.show()
