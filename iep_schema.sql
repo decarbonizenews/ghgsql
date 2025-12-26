@@ -1,9 +1,9 @@
 CREATE TABLE `iepraw` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT unsigned NOT NULL AUTO_INCREMENT,
   `PublicationDate` VARCHAR(10) CHARACTER SET ascii NOT NULL,
   `countryName` VARCHAR(20) CHARACTER SET ascii NOT NULL,
   `reportingYear` SMALLINT unsigned NOT NULL,
-  `EPRTR_SectorCode` TINYINT unsigned NOT NULL,
+  `EPRTR_SectorCode` TINYINT unsigned,
   `EPRTR_SectorName` VARCHAR(128) CHARACTER SET ascii NOT NULL,
   `EPRTRAnnexIMainActivity` VARCHAR(16) CHARACTER SET ascii NOT NULL,
   `FacilityInspireId` VARCHAR(256) NOT NULL,
