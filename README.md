@@ -3,6 +3,8 @@ Dockerfile to access EU industrial emission and ETS data via SQL / MariaDB
 
 ## instructions
 
+> [!NOTE] The database and table schemas are work in progress and may change.
+
 You can build the Docker image with `make` and start it with `make run`.
 
 It will expose a MariaDB (MySQL compatible) server (username `ghg` / no password) and a
