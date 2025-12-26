@@ -1,6 +1,7 @@
 CREATE TABLE `linking` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `ets` VARCHAR(32) NOT NULL,
+  `id` INT unsigned NOT NULL AUTO_INCREMENT,
+  `country` VARCHAR(2) NOT NULL,
+  `ets` BIGINT unsigned NOT NULL,
   `iep` VARCHAR(128) NOT NULL,
   `probability` FLOAT NOT NULL,
   PRIMARY KEY (id)

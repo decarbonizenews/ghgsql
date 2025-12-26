@@ -40,8 +40,9 @@ mariadb-import --ignore-lines=21 --fields-terminated-by=, \
 	--columns=$COLS
 
 echo "Import linking data"
+sed -i -e 's:^\([A-Z][A-Z]\)_:\1,:g' linking.csv
 mariadb-import --ignore-lines=1 --fields-terminated-by=, \
 	--local -u root $DB linking.csv \
-	--columns=ets,iep,probability
+	--columns=country,ets,iep,probability
 
 ./simplifydb.py
