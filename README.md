@@ -12,12 +12,11 @@ phpMyAdmin web interface on localhost.
 
 It currently provides a database `eu` with multiple tables:
 
-* `iep`/`iepraw` contain emission data for industrial facilities reported due to the
-  EU's Industrial Emissions Directive. `iepraw` contains the data in unmodified form
-  (column names and content like in CSV data source), while `iep` contains a simplified
-  version with shorter names (e.g., column name `year` instead of `reportingYear`,
-  pollutant name `CO2` instead of `Carbon dioxide (CO2)`) and uninteresting data
-  removed.
+* `iep`/`iepraw` contain emission data from the EU's Industrial Emissions Portal.
+  `iepraw` contains the data in unmodified form (column names and content like in CSV
+  data source), while `iep` contains a simplified version with shorter names (e.g.,
+  column name `year` instead of `reportingYear`, pollutant name `CO2` instead of
+  `Carbon dioxide (CO2)`) and uninteresting data removed.
 * `ets` containts emission data for the European Emission Trading System (ETS).
 * `linking` contains data that allows connecting entries from the two tables.
 
@@ -28,7 +27,7 @@ The `examples` subdirectory contains some usage examples in Python.
 The data sources are not part of this repository. They are fetched while building the
 Dockerfile.
 
-The [Industrial Reporting Directive data](
+The [Industrial Emissions Portal data](
 https://sdi.eea.europa.eu/catalogue/srv/eng/catalog.search#/metadata/9405f714-8015-4b5b-a63c-280b82861b3d)
 is provided by the European Environmental Agency. We use the latest CSV version of the
 air releases.
