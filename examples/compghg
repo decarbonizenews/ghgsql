@@ -12,9 +12,10 @@ import plotly.express
 
 
 def getdata(db, inspireid, n2o=False, start=0, end=9999):
-    db.execute("SELECT * FROM linking WHERE iep=%s", (inspireid,))
+    db.execute("SELECT country,ets FROM linking WHERE iep=%s", (inspireid,))
     linking = db.fetchone()
-    etscountry, etsid = linking["ets"].split("_")
+    etscountry = linking["country"]
+    etsid = linking["ets"]
 
     db.execute("SELECT * FROM ets WHERE "
                "REGISTRY_CODE=%s AND INSTALLATION_IDENTIFIER=%s",
