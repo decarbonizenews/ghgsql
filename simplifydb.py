@@ -54,11 +54,12 @@ for p in c.fetchall():
     c.execute("UPDATE iep SET pollutant=%s WHERE pollutant=%s", (shortname, pollutant))
 
 # Use 2-letter country codes to align with ETS database
+c.execute("ALTER TABLE iep ADD countrycode VARCHAR(2) AFTER city")
 c.execute("SELECT country FROM iep GROUP BY country")
 for x in c.fetchall():
     countryname = x["country"]
     countryshort = pycountry.countries.get(name=countryname).alpha_2
-    c.execute("UPDATE iep SET country=%s WHERE country=%s", (countryshort, countryname))
+    c.execute("UPDATE iep SET countrycode=%s WHERE country=%s", (countryshort, countryname))
 
 con.commit()
 
