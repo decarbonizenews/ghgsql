@@ -1,0 +1,310 @@
+#!/usr/bin/python3
+# SPDX-License-Identifier: 0BSD
+#
+# Creates emission plots used here:
+# https://industrydecarbonization.com/misc/eudata/
+
+import argparse
+import math
+import pathlib
+
+import jsmin
+import MySQLdb
+import MySQLdb.cursors
+import pandas
+import plotly.express
+
+import compghg
+
+# 2 colors via https://www.learnui.design/tools/data-color-picker.html
+IRPCOL = "#ef5675"
+ETSCOL = "#003f5c"
+# 4 colors via https://www.learnui.design/tools/data-color-picker.html
+COL = ["#003f5c", "#7a5195", "#ef5675", "#ffa600"]
+
+# more bright background grey
+BGCOL = "#eaeaea"
+
+JSPREFIX = "window.PLOTLYENV=window.PLOTLYENV || {};"
+jsout = ""
+
+
+def makelines(mydata):
+    # only configure stuff that is consistent across all
+    fig = plotly.express.line(mydata, markers=True)
+    fig.update_yaxes(rangemode="tozero")
+    fig.update_traces(connectgaps=True)
+    fig.update_xaxes(dtick="Y1")
+    fig.update_layout(margin={"l": 0, "r": 0, "t": 0, "b": 0})
+    fig.update_layout(font={"family": "Roboto,Helvetica,Sans-Serif", "weight": "bold"})
+    fig.update_layout(plot_bgcolor=BGCOL)
+    return fig
+
+
+def figtohtml(fig, divid):
+    global jsout
+    jhtml = fig.to_html(full_html=False, include_plotlyjs=False,
+                        include_mathjax=False, div_id=divid)
+    jhtml = jhtml.split('<script type="text/javascript">')[-1]
+    jhtml = jhtml.split("</script>")[0]
+
+    jhtml = jhtml.split(JSPREFIX)[-1]
+
+    jsout += jhtml
+
+    return (f'<div style="max-width:660px;width:100%;aspect-ratio:16/9"'
+            f' id="{divid}" class="plotly-graph-div"></div>\n')
+
+
+def makesolvay(db, inspireid, name, divid):
+    html = f'<h2 id="{divid}">{name}</h2>'
+    divid = divid + "plot"
+    db.execute("SELECT year,releases FROM iep WHERE inspireid=%s AND pollutant='SF6'",
+               (inspireid,))
+    solvay = {}
+    solvaygraphic = {}
+    for x in db.fetchall():
+        year = int(x["year"])
+        releases = int(x["releases"])
+        solvay[year] = releases
+        if year >= 2011:
+            solvaygraphic[year] = releases
+    solvayp = pandas.DataFrame({"Solvay": solvaygraphic}).sort_index()
+
+    fig = plotly.express.bar(solvayp, text_auto=True)
+    fig.update_layout(yaxis_title="kgSF₆", xaxis_title=None)
+    fig.update_layout(showlegend=False)
+    fig.update_traces(marker_color=IRPCOL)
+
+    fig.update_layout(margin={"l": 0, "r": 0, "t": 0, "b": 0})
+    fig.update_layout(font={"family": "Roboto,Helvetica,Sans-Serif", "weight": "bold"})
+    fig.update_layout(plot_bgcolor=BGCOL)
+
+    fig.update_xaxes(dtick="Y1")
+    html += figtohtml(fig, divid)
+
+    html += ("<p>Emissions before 2011 where much higher, "
+             "skipped them to keep plot readable.</p>")
+
+    html += "<table><tr><th>Year</th><th>kgSF₆</th></tr>"
+    for year in range(2007, 2025):
+        if year not in solvay:
+            val = "-"
+        else:
+            val = int(solvay[year])
+        html += f'<tr><td><em>{year}</em></td><td class="right">{val}</td></tr>'
+    html += "</table>"
+
+    if args.svg:
+        fig.write_image(f"out/{divid}.svg", width=800, height=450)
+
+    html += ('<p>See also: <a href="'
+             'https://industrydecarbonization.com/news/'
+             'super-emitter-of-the-most-damaging-greenhouse-gas-found-in-germany.html">'
+             'Super-Emitter of the most Damaging Greenhouse Gas found in Germany</a></p>')
+
+    return html
+
+
+def makefactory(db, inspireid, name, divid, n2o=False, start=0, end=9999, note=None):
+    html = f'<h2 id="{divid}">{name}</h2>'
+    divid = divid + "plot"
+
+    cdata = compghg.getdata(db, inspireid, n2o=n2o, start=start, end=end)
+
+    fig = makelines(cdata)
+    unit = "tCO₂"
+    if n2o:
+        unit = "tCO₂eq"
+    fig.update_layout(yaxis_title=unit, xaxis_title=None)
+    fig["data"][0]["line"]["color"] = ETSCOL
+    fig["data"][1]["line"]["color"] = IRPCOL
+
+    fig.update_layout(legend={"yanchor": "bottom", "y": 0.02,
+                              "xanchor": "left", "x": 0.01},
+                      legend_title=None)
+
+    html += figtohtml(fig, divid)
+
+    if args.svg:
+        fig.update_layout(xaxis_title=name)
+        fig.write_image(f"out/{divid}.svg", width=800, height=450)
+
+    xdata = cdata.to_dict()
+
+    if divid.startswith("alcoa"):
+        html += ("<br><table><tr><th>Year</th><th>Emission Trading System (tCO₂eq)</th>"
+                 "<th>Industrial Emissions Portal (tCO₂)</th></tr>\n")
+    elif not n2o:
+        html += ("<br><table><tr><th>Year</th><th>Emission Trading System (tCO₂)</th>"
+                 "<th>Industrial Emissions Portal (tCO₂)</th></tr>\n")
+    else:
+        html += ("<br><table><tr><th>Year</th><th>Emission Trading System (tCO₂eq)</th>"
+                 "<th>Industrial Emissions Portal (tCO₂eq)</th></tr>\n")
+    for year, etsval in xdata["Emission Trading System"].items():
+        if math.isnan(xdata["Industrial Emissions Portal"][year]):
+            iepval = "-"
+        else:
+            iepval = xdata["Industrial Emissions Portal"][year]
+            if iepval.is_integer() or iepval > 100:
+                iepval = round(iepval)
+            iepval = f"{iepval:,}"
+        html += (f'<tr><td><em>{year}</em></td><td class="right">{etsval:,}</td>'
+                 f'<td class="right">{iepval}</td></tr>\n')
+    html += "</table>\n"
+
+    if note:
+        html += f"<p><em><b>Note:</b> {note}</em></p>\n"
+
+    html += "<br>"
+
+    return html
+
+
+def makenorduralsf6(db, inspireid, name, divid, note=None):
+    html = f'<h2 id="{divid}">{name}</h2>'
+    divid = divid + "plot"
+
+    db.execute("SELECT releases FROM iep WHERE inspireid=%s AND pollutant='SF6' AND year=2011;",
+               (inspireid,))
+    sf6dat = db.fetchall()[0]
+    co2eq = (sf6dat["releases"] * 25400) // 1000
+    html += "<p><table><tr><th>Year</th><th>Industrial Emissions Portal</th></tr>\n"
+    html += (f'<tr><td><em>2011 (kgSF₆)</em></td>'
+             f'<td class="right">{sf6dat["releases"]:,}</td></tr>\n')
+    html += f'<tr><td><em>2011 (SF₆ in tCO2eq)</em></td><td class="right">{co2eq:,}</td></tr>\n'
+    html += "</table>"
+
+    if note:
+        html += f"<p><em><b>Note:</b> {note}</em></p>\n"
+
+    html += "<br>"
+
+    return html
+
+
+def makearcelorhh(db, name, divid):
+    html = f'<h2 id="{divid}">{name}</h2>'
+    divid = divid + "plot"
+
+    plants = {"DRI": {"id": 204543},
+              "EAF": {"id": 67},
+              "Mill": {"id": 204544}}
+
+    arcelor = {}
+    for k, p in plants.items():
+        arcelor[k] = {}
+        db.execute("SELECT * FROM ets WHERE REGISTRY_CODE='DE'"
+                   " AND INSTALLATION_IDENTIFIER=%s", (p["id"],))
+        dr = db.fetchall()[0]
+        for year in range(2013, 2025):
+            e = int(dr[f"VERIFIED_EMISSIONS_{year}"])
+            if e > 0:
+                arcelor[k][year] = e
+    akeys = arcelor.keys()
+    arcelor["Total"] = {}
+    for year in range(2013, 2025):
+        arcelor["Total"][year] = 0
+        for a in akeys:
+            arcelor["Total"][year] += arcelor[a][year]
+    arcelorp = pandas.DataFrame(arcelor).sort_index()
+
+    fig = makelines(arcelorp)
+    fig.update_layout(yaxis_title="tCO₂", xaxis_title=None)
+    fig.update_layout(legend={"yanchor": "top", "y": 0.98,
+                              "xanchor": "right", "x": 0.99},
+                      legend_title=None)
+
+    # 4 colors from https://www.learnui.design/tools/data-color-picker.html
+    COL = ["#003f5c", "#7a5195", "#ef5675", "#ffa600"]
+    fig["data"][0]["line"]["color"] = COL[0]
+    fig["data"][1]["line"]["color"] = COL[1]
+    fig["data"][2]["line"]["color"] = COL[2]
+    fig["data"][3]["line"]["color"] = COL[3]
+
+    html += figtohtml(fig, divid)
+
+    html += "<table><tr><th>Year</th>"
+    for x in arcelor:
+        html += f"<th>{x}</th>"
+    html += "</tr>\n"
+
+    for year in range(2013, 2025):
+        html += f"<tr><td><em>{year}</em></td>"
+        for v in arcelor.values():
+            html += f'<td class="right">{v[year]:,}</td>'
+        html += "</tr>\n"
+    html += "</table>"
+
+    html += ("<p>CO₂ data for ArcelorMittal's DRI plant in Hamburg is "
+             "completely missing in the Industrial Emissions Portal.</p>")
+
+    return html
+
+
+ap = argparse.ArgumentParser()
+ap.add_argument("html")
+ap.add_argument("javascript")
+ap.add_argument("outstub", nargs="?")
+ap.add_argument("--svg", action="store_true")
+args = ap.parse_args()
+
+c = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor, host="127.0.0.1",
+                    database="eu", user="ghg").cursor()
+
+htmlstubtop = """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>emissionplots</title>
+<script src="plotly-basic-3.3.1.min.js"></script>
+<link rel="stylesheet" href="plot.css">
+<body><div style="max-width:670px">
+"""
+htmlstubbottom = "</div></body></html>\n"
+
+mpage = ""
+
+mpage += makefactory(c, "FR.CAED/10845.FACILITY",
+                     "ArcelorMittal Steel Plant (Dunkirk, France)", "arcelordunkirk",
+                     start=2008, end=2023)
+
+n2onote = "ETS for N₂O emissions only started in 2013; skipped earlier data."
+mpage += makefactory(c, "FR.CAED/644.FACILITY", "Yara Fertilizer Plant (Ambès, France)",
+                     "yara", start=2013, end=2023, n2o=True, note=n2onote)
+
+icelandnote = "Iceland entered the ETS in 2013; skipped earlier data."
+mpage += makefactory(c, "IS.CAED/640675-0209", "Elkem Ferrosilicon Plant (Iceland)",
+                     "elkem", start=2013, end=2022,
+                     note=icelandnote)
+
+alcoanote = icelandnote
+alcoanote += (" ETS data for Aluminium plants also contains PFC emissions, "
+              "which can't be calculated exactly from the Industrial Emissions "
+              "Portal data. This explains the slight deviation from 2013 to 2018 "
+              "(but not the much larger deviation from 2019 to 2022).")
+mpage += makefactory(c, "IS.CAED/520303-4210", "Alcoa Aluminium Plant (Iceland)",
+                     "alcoa", start=2013, end=2022,
+                     note=alcoanote)
+
+norduralnote = ("The Industrial Emissions Portal reports a large release of SF₆ "
+                "in 2011, but not in any other year.")
+mpage += makenorduralsf6(c, "IS.CAED/570297-2609",
+                         "Norðurál Aluminium Plant (Grundartangi, Iceland)",
+                         "nordural", note=norduralnote)
+
+mpage += makesolvay(c, "https://registry.gdi-de.org/id/de.bw.lubw.inspire.pf"
+                    "/pf-450-7047053-00000000", "Solvay SF₆ plant (Bad Wimpfen, Germany)",
+                    "solvay")
+
+mpage += makearcelorhh(c, "ArcelorMittal Steel Plant (Hamburg Germany)",
+                       "arcelorhamburg")
+
+jsout = JSPREFIX + jsout
+jsout = jsmin.jsmin(jsout)
+
+if args.outstub:
+    opage = htmlstubtop + mpage
+    opage += f"<script>{jsout}</script>"
+    opage += htmlstubbottom
+    pathlib.Path(args.outstub).write_text(opage)
+
+pathlib.Path(args.html).write_text(mpage)
+pathlib.Path(args.javascript).write_text(jsout)
