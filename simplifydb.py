@@ -36,7 +36,7 @@ c.execute("ALTER TABLE iep MODIFY "
           "`annexiactivity` VARCHAR(16) CHARACTER SET ascii NOT NULL AFTER `releases`")
 c.execute("ALTER TABLE iep MODIFY "
           "`sectorname` VARCHAR(128) CHARACTER SET ascii NOT NULL AFTER `releases`")
-c.execute("ALTER TABLE iep MODIFY `sectorcode` TINYINT unsigned NOT NULL AFTER `releases`")
+c.execute("ALTER TABLE iep MODIFY `sectorcode` TINYINT unsigned AFTER `releases`")
 c.execute("ALTER TABLE iep MODIFY `lat` VARCHAR(32) CHARACTER SET ascii NOT NULL AFTER `releases`")
 c.execute("ALTER TABLE iep MODIFY `lon` VARCHAR(32) CHARACTER SET ascii NOT NULL AFTER `releases`")
 c.execute("ALTER TABLE iep MODIFY `city` VARCHAR(128) NOT NULL AFTER `releases`")

@@ -14,7 +14,7 @@ CREATE TABLE `iepraw` (
   `addressConfidentialityReason` VARCHAR(32) CHARACTER SET ascii NOT NULL,
   `TargetRelease` VARCHAR(8) CHARACTER SET ascii NOT NULL,
   `Pollutant` VARCHAR(128) CHARACTER SET ascii NOT NULL,
-  `Releases` BIGINT unsigned NOT NULL,
+  `Releases` BIGINT unsigned,
   `confidentialityReason` VARCHAR(16) CHARACTER SET ascii NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

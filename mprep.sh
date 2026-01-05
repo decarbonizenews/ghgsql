@@ -25,24 +25,23 @@ echo "Import SQL schemas"
 cat *.sql | mariadb -u root $DB
 
 echo "Import industrial reporting data"
-COLS=$(tail -n +3 iep_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
-mariadb-import --ignore-lines=1 --fields-terminated-by=, \
-	--fields-optionally-enclosed-by='"' \
-	--local -u root $DB iepraw.csv \
-	--columns=$COLS
+COLS=$(tail -n +3 iep_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g' -e 's:EPRTR_SectorCode:@EPRTR_SectorCode:g' -e 's:Releases:@Releases:g')
+echo "LOAD DATA INFILE '/iepraw.csv' INTO TABLE iepraw
+      FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES
+      ($COLS) SET EPRTR_SectorCode=NULLIF(@EPRTR_SectorCode, ''),
+      Releases=NULLIF(@Releases, '');SHOW WARNINGS" | mariadb -u root eu
 
 echo "Import ets data"
 COLS=$(tail -n +3 ets_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
 sed -i -e 's:Excluded:NULL:g' ets.csv
-mariadb-import --ignore-lines=21 --fields-terminated-by=, \
-	--fields-optionally-enclosed-by='"' \
-	--local -u root $DB ets.csv \
-	--columns=$COLS
+echo "LOAD DATA INFILE '/ets.csv' INTO TABLE ets
+      FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 21 LINES
+      ($COLS);SHOW WARNINGS" | mariadb -u root eu
 
 echo "Import linking data"
 sed -i -e 's:^\([A-Z][A-Z]\)_:\1,:g' linking.csv
-mariadb-import --ignore-lines=1 --fields-terminated-by=, \
-	--local -u root $DB linking.csv \
-	--columns=country,ets,iep,probability
+echo "LOAD DATA INFILE '/linking.csv' INTO TABLE linking
+      FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES
+      (country,ets,iep,probability);SHOW WARNINGS" | mariadb -u root eu
 
 ./simplifydb.py
