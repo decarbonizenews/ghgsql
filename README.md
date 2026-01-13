@@ -1,10 +1,18 @@
 # ghgsql
 Dockerfile to access EU industrial emission and ETS data via SQL / MariaDB
 
+## see also
+
+* [Errors and Inconsistencies in European Emission Data (Dec 2025, Industry
+  Decarbonization Newsletter)](
+  https://industrydecarbonization.com/news/errors-and-inconsistencies-in-european-emission-data.html)
+* [Greenhouse Gas Emission Data: Public, difficult to access, and not always correct
+  (Dec 2025, presentation at 39C3)](
+  https://media.ccc.de/v/39c3-greenhouse-gas-emission-data-public-difficult-to-access-and-not-always-correct)
+
 ## instructions
 
-> [!NOTE]
-> The database and table schemas are work in progress and may change.
+> [!NOTE] The database and table schemas are work in progress and may change.
 
 You can build the Docker image with `make` and start it with `make run`.
 
