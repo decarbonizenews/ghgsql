@@ -29,7 +29,7 @@ It currently provides a database `eu` with multiple tables:
 * `ets` containts emission data for the European Emission Trading System (ETS).
 * `linking` contains data that allows connecting entries from the two tables.
 
-The `examples` subdirectory contains some usage examples in Python.
+The `examples` subdirectory contains some usage examples in Python as well as some SQL queries that can be executed using the `ghgsql` script (see file headers for details).
 
 ## data sources
 
