@@ -3,19 +3,18 @@
 #
 # Creates emission plots used here:
 # https://industrydecarbonization.com/misc/eudata/
-#
-# Needs a symlink from compghg to compghg.py to run.
 
 import argparse
 import math
 import pathlib
 
-import compghg
 import jsmin
 import MySQLdb
 import MySQLdb.cursors
 import pandas
 import plotly.express
+
+import compghg
 
 # 2 colors via https://www.learnui.design/tools/data-color-picker.html
 IRPCOL = "#ef5675"
