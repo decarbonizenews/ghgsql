@@ -1,11 +1,6 @@
 #!/bin/sh
 # SPDX-License-Identifier: 0BSD
 
-CONTAINER_ID=$(docker ps -q --filter ancestor=ghgsql | head -n 1)
+MYDIR=$(dirname -- "$0")
 
-if [ -z "$CONTAINER_ID" ]; then
-    echo "Error: ghgsql container is not running. Please start it with 'make run'." >&2
-    exit 1
-fi
-
-docker exec -i "$CONTAINER_ID" mariadb -ughg -D eu "$@"
+mariadb --defaults-extra-file=$MYDIR/ghg.cfg "$@"

@@ -3,7 +3,7 @@
 # Aggregating potential off-by-1000x errors by country and year to
 # identify temporal patterns (e.g., process changes).
 #
-# You can execute this by piping it into the ghgsql script:
+# You can execute this by piping it into the ghgsql script (requires local mariadb installation):
 #   ./ghgsql < examples/suspicious_stats_by_year.sql
 #
 # Alternatively, you can run this in any SQL client connecting to the database,
