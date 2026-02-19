@@ -3,7 +3,7 @@
 # Aggregating potential off-by-1000x errors by country to identify
 # systematic issues or lack thereof.
 #
-# You can execute this by piping it into the ghgsql script (requires local mariadb installation):
+# You can execute this by piping it into the ghgsql script:
 #   ./ghgsql < examples/suspicious_stats_by_country.sql
 #
 # Alternatively, you can run this in any SQL client connecting to the database,
