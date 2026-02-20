@@ -3,8 +3,6 @@
 #
 # Creates emission plots used here:
 # https://industrydecarbonization.com/misc/eudata/
-#
-# Needs a symlink from compghg to compghg.py to run.
 
 import argparse
 import math
