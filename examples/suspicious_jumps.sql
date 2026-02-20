@@ -3,7 +3,7 @@
 # Heuristically detecting potential t/kg unit confusion/off-by-1000x
 # errors in the Industrial Emissions Portal data.
 #
-# You can execute this by piping it into the ghgsql script (requires local mariadb installation):
+# You can execute this by piping it into the ghgsql script:
 #   ./ghgsql < examples/suspicious_jumps.sql
 #
 # Alternatively, you can run this in any SQL client connecting to the database,
