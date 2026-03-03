@@ -44,7 +44,11 @@ def figtohtml(fig, divid):
     global jsout
     jhtml = fig.to_html(full_html=False, include_plotlyjs=False,
                         include_mathjax=False, div_id=divid)
-    jhtml = jhtml.split('<script type="text/javascript">')[-1]
+    if '<script type="text/javascript">' in jhtml:  # plotly before v6.6.0
+        splitter = '<script type="text/javascript">'
+    else:  # plotly v6.6.0 and later
+        splitter = "<script>"
+    jhtml = jhtml.split(splitter)[-1]
     jhtml = jhtml.split("</script>")[0]
 
     jhtml = jhtml.split(JSPREFIX)[-1]
