@@ -204,7 +204,7 @@ def makearcelorhh(db, name, divid):
             e = int(dr[f"VERIFIED_EMISSIONS_{year}"])
             if e > 0:
                 arcelor[k][year] = e
-    akeys = arcelor.keys()
+    akeys = ["DRI", "EAF", "Mill"]
     arcelor["Total"] = {}
     for year in range(2013, 2025):
         arcelor["Total"][year] = 0
