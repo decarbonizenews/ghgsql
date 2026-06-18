@@ -64,7 +64,7 @@ def getdata(db, inspireid, n2o=False, start=0, end=9999):
             if year not in iredata:
                 iredata[year] = 0
             # divide by 1000 because industrial reporting is in kg, ets in t
-            iredata[year] = (d["releases"] * n2ogwpfactor) / 1000
+            iredata[year] += (d["releases"] * n2ogwpfactor) / 1000
 
     dat = {"Emission Trading System": etsdata, "Industrial Emissions Portal": iredata}
     return pandas.DataFrame(dat).sort_index()
