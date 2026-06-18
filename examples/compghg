@@ -13,23 +13,29 @@ import plotly.express
 
 def getdata(db, inspireid, n2o=False, start=0, end=9999):
     db.execute("SELECT country,ets FROM linking WHERE iep=%s", (inspireid,))
-    linking = db.fetchone()
-    etscountry = linking["country"]
-    etsid = linking["ets"]
-
-    db.execute("SELECT * FROM ets WHERE "
-               "REGISTRY_CODE=%s AND INSTALLATION_IDENTIFIER=%s",
-               (etscountry, etsid))
-
     etsdata = {}
-    for k, v in db.fetchone().items():
-        if k.startswith("VERIFIED_EMISSIONS_"):
-            if v == -1:
-                continue
-            year = int(k.split("_")[-1])
-            if year < start or year > end:
-                continue
-            etsdata[year] = v
+    for linking in db.fetchall():
+        etscountry = linking["country"]
+        etsid = linking["ets"]
+
+        db.execute("SELECT * FROM ets WHERE "
+                   "REGISTRY_CODE=%s AND INSTALLATION_IDENTIFIER=%s",
+                   (etscountry, etsid))
+
+        dbfetch = db.fetchone()
+        if not dbfetch:
+            continue
+        for k, v in dbfetch.items():
+            if k.startswith("VERIFIED_EMISSIONS_"):
+                if v == -1:
+                    continue
+                year = int(k.split("_")[-1])
+                if year < start or year > end:
+                    continue
+                if year not in etsdata:
+                    etsdata[year] = v
+                else:
+                    etsdata[year] += v
 
     db.execute("SELECT year,releases FROM iep "
                "WHERE pollutant='CO2' AND inspireid=%s",
