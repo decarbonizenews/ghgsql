@@ -33,8 +33,8 @@ echo "LOAD DATA INFILE '/iepraw.csv' INTO TABLE iepraw
 
 echo "Import ets data"
 COLS=$(tail -n +3 ets_schema.sql | head -n -2 | sed -e 's:^  `::g' -e 's:`.*:,:g' | tr -d '\n' | sed -e 's:,$::g')
-sed -i -e 's:Excluded:NULL:g' ets.csv
-echo "LOAD DATA INFILE '/ets.csv' INTO TABLE ets
+sed -i -e 's:Excluded:NULL:g' /ets/data.csv
+echo "LOAD DATA INFILE '/ets/data.csv' INTO TABLE ets
       FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 21 LINES
       ($COLS);SHOW WARNINGS" | mariadb -u root eu
 

@@ -11,8 +11,8 @@ ENV IEP_URL="https://sdi.eea.europa.eu/datashare/public.php/dav/files/gN8jayNx7i
 
 # Latest "Verified Emissions" from
 # https://union-registry-data.ec.europa.eu/
-# Last data update: 2025-04-01
-ENV ETS_URL="https://climate.ec.europa.eu/document/download/385daec1-0970-44ab-917d-f500658e72aa_en?filename=verified_emissions_2024_en.xlsx"
+# Last data update: 2026-04-01
+ENV ETS_URL="https://climate.ec.europa.eu/document/download/53018483-62b3-499e-9ab9-b4a831cc44f4_en?filename=verified_emissions_2025_en.xlsx"
 
 # Linking data
 # https://cadmus.eui.eu/entities/publication/d8887cdd-c98c-4ba3-8e91-0710747f4e4e
@@ -43,13 +43,13 @@ RUN sed -e 's:^bind-address:#bind-address:g' -i /etc/mysql/mariadb.conf.d/50-ser
 
 RUN wget -O iepraw.csv "${IEP_URL}"
 RUN wget -O etsdata.xlsx "${ETS_URL}"
-RUN xlsx2csv etsdata.xlsx ets.csv
+RUN xlsx2csv -a etsdata.xlsx ets
 RUN wget -O linking.csv "${LINKING_URL}"
 
 COPY run.sh mprep.sh iep_schema.sql ets_schema.sql linking_schema.sql simplifydb.py /
 RUN ./mprep.sh
 
-RUN rm mprep.sh simplifydb.py *.csv *.sql *.xlsx
+RUN rm -r ets/ mprep.sh simplifydb.py *.csv *.sql *.xlsx
 
 CMD ["/run.sh"]
 
