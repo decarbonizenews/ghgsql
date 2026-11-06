@@ -61,7 +61,7 @@ def figtohtml(fig, divid):
 
 def makesolvay(db, inspireid, name, divid):
     html = f'<h2 id="{divid}">{name}</h2>'
-    divid = divid + "plot"
+    divid += "plot"
     db.execute("SELECT year,releases FROM iep WHERE inspireid=%s AND pollutant='SF6'",
                (inspireid,))
     solvay = {}
@@ -111,7 +111,7 @@ def makesolvay(db, inspireid, name, divid):
 
 def makefactory(db, inspireid, name, divid, n2o=False, start=0, end=9999, note=None):
     html = f'<h2 id="{divid}">{name}</h2>'
-    divid = divid + "plot"
+    divid += "plot"
 
     cdata = compghg.getdata(db, inspireid, n2o=n2o, start=start, end=end)
 
@@ -166,7 +166,7 @@ def makefactory(db, inspireid, name, divid, n2o=False, start=0, end=9999, note=N
 
 def makenorduralsf6(db, inspireid, name, divid, note=None):
     html = f'<h2 id="{divid}">{name}</h2>'
-    divid = divid + "plot"
+    divid += "plot"
 
     db.execute("SELECT releases FROM iep WHERE inspireid=%s AND pollutant='SF6' AND year=2011;",
                (inspireid,))
@@ -188,7 +188,7 @@ def makenorduralsf6(db, inspireid, name, divid, note=None):
 
 def makearcelorhh(db, name, divid):
     html = f'<h2 id="{divid}">{name}</h2>'
-    divid = divid + "plot"
+    divid += "plot"
 
     plants = {"DRI": {"id": 204543},
               "EAF": {"id": 67},
