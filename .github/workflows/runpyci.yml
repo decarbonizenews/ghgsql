@@ -1,21 +1,23 @@
 # SPDX-License-Identifier: 0BSD
-# last update: 2026-07-25
+# last update: 2026-11-06
 # https://github.com/hannob/codingstyle
 ---
 name: runpyci
 "on":
-  - pull_request
-  - push
+  pull_request:
+  push:
+  schedule:
+    - cron: '39 4 18 */3 *'
 
 jobs:
   build:
     strategy:
       matrix:
-        python-version: [3.12, 3.x]
+        python-version: ['3.12', '3.x']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Set up Python ${{ matrix.python-version }} ${{ matrix.os }}
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
